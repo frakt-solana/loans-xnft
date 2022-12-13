@@ -12,20 +12,20 @@ type CreateLoansService = (props: {
   apiDomain?: string
   programPublicKey: string
   adminPublicKey: string
-}) => Promise<{
+}) => {
   fetchWalletNfts: FetchWalletNfts
-  fetchBulgSuggestion: FetchBulkSuggestion
+  fetchBulkSuggestion: FetchBulkSuggestion
   proposeLoans: ProposeLoans
   proposeLoan: ProposeLoan
-}>
-export const createLoansService: CreateLoansService = async ({
+}
+export const createLoansService: CreateLoansService = ({
   apiDomain = DEFAULT_BACKEND_DOMAIN,
   programPublicKey,
   adminPublicKey,
 }) => {
   return {
     fetchWalletNfts: createFetchWalletNfts(apiDomain),
-    fetchBulgSuggestion: createFetchBulkSuggestion(apiDomain),
+    fetchBulkSuggestion: createFetchBulkSuggestion(apiDomain),
     proposeLoans: createProposeLoans({ programPublicKey, adminPublicKey }),
     proposeLoan: createProposeLoan({ programPublicKey, adminPublicKey }),
   }
