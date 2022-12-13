@@ -1,91 +1,97 @@
-import React, { useEffect, useState } from "react";
-import ReactXnft, { Button, Loading, Stack, Text, TextField, useConnection, useNavigation, usePublicKey, View } from "react-xnft";
-import { sum, map } from 'ramda';
-import { fetchWalletBorrowNfts } from "./api/nft";
+import React, { useCallback, useState } from 'react'
+import {
+  Button,
+  Loading,
+  Text,
+  TextField,
+  useNavigation,
+  View,
+} from 'react-xnft'
+import { isNull } from 'lodash'
 
+import { useMaxBorrowValue } from './hooks'
 
 const Home = () => {
+  const navigation = useNavigation()
+  const { maxBorrowValue, isLoading } = useMaxBorrowValue()
 
-    const publicKey = usePublicKey();
-    const connection = useConnection();
-    const nav = useNavigation();
-    const [availableBorrowValue, setAvailableBorrowValue] = useState<number | undefined>(undefined);
-    const [requestedBorrowValue, setRequestedBorrowValue] = useState<number | undefined>(undefined);
-    const [loading, setLoading] = useState(false);
-    const maxLoanValue = ({ maxLoanValue }) => maxLoanValue;
+  const [borrowValue, setBorrowValue] = useState<string>('')
 
-    useEffect(() => {
-        setLoading(true);
-        (async () => {
-            const walletNfts = await fetchWalletBorrowNfts({
-                publicKey,
-                limit: 1000,
-                offset: 0,
-            });
+  const onMaxClick = useCallback(
+    () => setBorrowValue(maxBorrowValue?.toFixed(2) || ''),
+    [maxBorrowValue]
+  )
 
-            const availableBorrowValue =
-                sum(map(maxLoanValue, walletNfts)) || null;
+  const onTextFieldChange = (event: any) => {
+    const value = event.target.value
+    setBorrowValue(value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'))
+  }
 
-            setAvailableBorrowValue(availableBorrowValue);
-            setRequestedBorrowValue(availableBorrowValue);
-        })();
-        setLoading(false);
-    }, [publicKey]);
+  const isBorrowBtnDisabled =
+    !borrowValue ||
+    parseFloat(borrowValue) > parseFloat(maxBorrowValue?.toFixed(2) || '0')
 
-    const onMax = () => {
-        setRequestedBorrowValue(availableBorrowValue)
+  const onBorrowClick = () => {
+    if (!isBorrowBtnDisabled) {
+      navigation.push('suggestions', { solAmount: parseFloat(borrowValue) })
     }
+  }
 
-    const onChangeRequestedBorrow = (ev) => {
-        const value = ev.target.value;
-        console.log(value)
-        try {
-            setRequestedBorrowValue(value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'))
-            // setRequestedBorrowValue(parseFloat(value) || 0)
-        } catch (error) {
-            setRequestedBorrowValue(undefined)
-        }
-    }
-
-    const disabled = !requestedBorrowValue || requestedBorrowValue > (availableBorrowValue || 0);
-
-    const onBorrow = () => {
-        if (!disabled) {
-
-            nav.push("suggestions", { solAmount: requestedBorrowValue });
-        }
-    }
-
-    if (loading) {
-        return <View>
-            <Loading></Loading>
-        </View>
-    }
-    return <View style={{
+  if (isLoading || isNull(maxBorrowValue)) {
+    return (
+      <View>
+        <Loading />
+      </View>
+    )
+  }
+  return (
+    <View
+      style={{
         display: 'flex',
-        justifyContent: "center",
-        flexDirection: "column",
-        alignItems: "center",
-        marginTop: "60px",
-        gap: "15px"
-    }}>
-
-        <View>
-            <Text>Borrow up tp {availableBorrowValue}◎ with your NFTs!</Text>
-        </View>
-        <View style={{ position: "relative" }}>
-            <TextField style={{ width: '100%' }} placeholder={availableBorrowValue?.toString()} value={requestedBorrowValue?.toString()} onChange={onChangeRequestedBorrow}></TextField>
-            <Button onClick={onMax} style={{ background: "transparent", position: "absolute", right: 0, top: "5px", bottom: "5px" }}>MAX</Button>
-        </View>
-        <View>
-            <Button style={{
-                opacity: disabled ? '0.5' : '1',
-                backgroundColor: "#9cff1f",
-                color: "black"
-            }}
-                onClick={onBorrow}>Borrow</Button>
-        </View>
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginTop: '60px',
+        gap: '15px',
+      }}
+    >
+      <View>
+        <Text>Borrow up tp {maxBorrowValue?.toFixed(2)}◎ with your NFTs!</Text>
+      </View>
+      <View style={{ position: 'relative' }}>
+        <TextField
+          style={{ width: '100%' }}
+          placeholder={maxBorrowValue?.toFixed(2)}
+          value={borrowValue}
+          onChange={onTextFieldChange}
+        />
+        <Button
+          onClick={onMaxClick}
+          style={{
+            background: 'transparent',
+            position: 'absolute',
+            right: 0,
+            top: '5px',
+            bottom: '5px',
+          }}
+        >
+          MAX
+        </Button>
+      </View>
+      <View>
+        <Button
+          style={{
+            opacity: isBorrowBtnDisabled ? '0.5' : '1',
+            backgroundColor: '#9cff1f',
+            color: 'black',
+          }}
+          onClick={onBorrowClick}
+        >
+          Borrow
+        </Button>
+      </View>
     </View>
+  )
 }
 
-export default Home;
+export default Home
