@@ -1,9 +1,9 @@
 import React from 'react'
 import { Stack, View, Text } from 'react-xnft'
 
-import Home from './Home'
-import Suggestions from './Suggestions'
 import { Frakt } from './iconsNew/Frakt'
+import Suggestions from './Suggestions/Suggestions'
+import Home from './Home/Home'
 
 export function App() {
   return (
