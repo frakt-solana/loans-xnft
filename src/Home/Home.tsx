@@ -9,7 +9,12 @@ import {
 } from 'react-xnft'
 import { isNull } from 'lodash'
 
-import { borrowButtonStyles, maxButtonStyles, viewStyles } from './styles'
+import {
+  borrowButtonStyles,
+  loadingStyles,
+  maxButtonStyles,
+  viewStyles,
+} from './styles'
 import { useMaxBorrowValue } from '../hooks'
 
 const Home: FC = () => {
@@ -41,10 +46,12 @@ const Home: FC = () => {
   if (isLoading || isNull(maxBorrowValue)) {
     return (
       <View>
-        <Loading />
+        <Loading style={loadingStyles} />
       </View>
     )
   }
+  <Loading style={loadingStyles} />
+  
   return (
     <View style={viewStyles}>
       <View>

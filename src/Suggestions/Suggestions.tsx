@@ -7,13 +7,13 @@ import {
   useSolanaConnection,
   View,
 } from 'react-xnft'
-import { valueInfoStyles } from '../Home/styles'
 
 import { useBulkSuggestion, useLoansService, useSolanaWallet } from '../hooks'
 import { BorrowNftBulk, BulkTypes } from '../loansService'
 import { badgesInfo } from './constants'
 import { getTotalValue } from './helpers'
 import {
+  badgeStyles,
   borrowButtonStyles,
   buttonWrapperStyles,
   containerStyles,
@@ -21,6 +21,7 @@ import {
   nftListStyles,
   valueStyles,
   viewStyles,
+  valueInfoStyles,
 } from './styles'
 
 const Suggestions: FC<{ solAmount: number }> = ({ solAmount }) => {
@@ -56,6 +57,7 @@ const Suggestions: FC<{ solAmount: number }> = ({ solAmount }) => {
       setLoading(false)
     }
   }
+
   const getBulkValues = (
     bulk: BorrowNftBulk[],
     value: number,
@@ -67,8 +69,8 @@ const Suggestions: FC<{ solAmount: number }> = ({ solAmount }) => {
     return (
       <View style={viewStyles.styles(color)}>
         <View>
+          <View style={badgeStyles.styles(color)}>{title}</View>
           <View style={valueInfoStyles}>
-            <Text style={{ color }}>{title}</Text>
             <Text style={valueStyles}>Borrowing {value.toFixed(2)}◎</Text>
           </View>
           <View style={nftListStyles}>
