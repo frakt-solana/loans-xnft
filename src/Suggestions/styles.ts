@@ -68,6 +68,7 @@ const loansStatusStyles = {
   marginTop: '60px',
   textAlign: 'center',
   gap: '15px',
+  padding: '0 15px'
 } as CSSProperties
 
 const containerStyles = {
