@@ -4,6 +4,7 @@ import {
   Image,
   Loading,
   Text,
+  useNavigation,
   useSolanaConnection,
   View,
 } from 'react-xnft'
@@ -22,13 +23,20 @@ import {
   valueStyles,
   viewStyles,
   valueInfoStyles,
+  loansStatusStyles,
 } from './styles'
+
+enum LoanStatus {
+  PENDING = 'pending',
+  SUCCESS = 'success',
+}
 
 const Suggestions: FC<{ solAmount: number }> = ({ solAmount }) => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const wallet = useSolanaWallet()
   const connection = useSolanaConnection()
+  const navigation = useNavigation()
 
   const { proposeLoans } = useLoansService()
 
@@ -44,13 +52,18 @@ const Suggestions: FC<{ solAmount: number }> = ({ solAmount }) => {
   const safestBulkValue = getTotalValue(safestBulk)
   const maxBulkValue = getTotalValue(maxBulk)
 
+  const [loanStatus, setLoanStatus] = useState<LoanStatus | null>(null)
+
   const onBorrow = async (type: string): Promise<void> => {
     try {
       await proposeLoans({
         bulkNfts: suggestion?.[type],
         connection,
         wallet,
+        onAfterSend: () => setLoanStatus(LoanStatus.PENDING),
       })
+
+      setLoanStatus(LoanStatus.SUCCESS)
     } catch (error) {
       console.error(error)
     } finally {
@@ -97,12 +110,30 @@ const Suggestions: FC<{ solAmount: number }> = ({ solAmount }) => {
       </View>
     )
   }
+
   return (
     <View style={containerStyles}>
-      {getBulkValues(bestBulk, bestBulkValue, BulkTypes.BEST)}
-      {getBulkValues(cheapestBulk, cheapestBulkValue, BulkTypes.CHEAPEST)}
-      {getBulkValues(safestBulk, safestBulkValue, BulkTypes.SAFEST)}
-      {getBulkValues(maxBulk, maxBulkValue, BulkTypes.BEST)}
+      {loanStatus === LoanStatus.PENDING && (
+        <View style={loansStatusStyles}>
+          <Text>
+            We are collateralizing your jpegs. It should take less than a minute
+          </Text>
+        </View>
+      )}
+      {loanStatus === LoanStatus.SUCCESS && (
+        <View style={loansStatusStyles}>
+          <Text>Congrats! See your NFTs in app.frakt.xyz</Text>
+          <Button onClick={() => navigation.push('home')}>Home</Button>
+        </View>
+      )}
+      {loanStatus === null && (
+        <>
+          {getBulkValues(bestBulk, bestBulkValue, BulkTypes.BEST)}
+          {getBulkValues(cheapestBulk, cheapestBulkValue, BulkTypes.CHEAPEST)}
+          {getBulkValues(safestBulk, safestBulkValue, BulkTypes.SAFEST)}
+          {getBulkValues(maxBulk, maxBulkValue, BulkTypes.BEST)}
+        </>
+      )}
     </View>
   )
 }

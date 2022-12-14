@@ -60,6 +60,16 @@ const buttonWrapperStyles = {
   justifyContent: 'center',
 }
 
+const loansStatusStyles = {
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginTop: '60px',
+  textAlign: 'center',
+  gap: '15px',
+} as CSSProperties
+
 const containerStyles = {
   gap: '25px',
   display: 'flex',
@@ -103,4 +113,5 @@ export {
   buttonWrapperStyles,
   badgeStyles,
   valueInfoStyles,
+  loansStatusStyles,
 }
