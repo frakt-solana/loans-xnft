@@ -220,7 +220,6 @@ const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
 type CreateProposeLoans = (props: {
   programPublicKey: string
   adminPublicKey: string
-  onAfterSend?: () => void
 }) => ProposeLoans
 export const createProposeLoans: CreateProposeLoans =
   ({ programPublicKey, adminPublicKey }) =>
