@@ -23,12 +23,11 @@ export const createLoansService: CreateLoansService = ({
   apiDomain = DEFAULT_BACKEND_DOMAIN,
   programPublicKey,
   adminPublicKey,
-  onAfterSend
 }) => {
   return {
     fetchWalletNfts: createFetchWalletNfts(apiDomain),
     fetchBulkSuggestion: createFetchBulkSuggestion(apiDomain),
-    proposeLoans: createProposeLoans({ programPublicKey, adminPublicKey, onAfterSend }),
+    proposeLoans: createProposeLoans({ programPublicKey, adminPublicKey }),
     proposeLoan: createProposeLoan({ programPublicKey, adminPublicKey }),
   }
 }
