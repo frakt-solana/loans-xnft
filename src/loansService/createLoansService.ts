@@ -12,6 +12,7 @@ type CreateLoansService = (props: {
   apiDomain?: string
   programPublicKey: string
   adminPublicKey: string
+  onAfterSend?: () => void,
 }) => {
   fetchWalletNfts: FetchWalletNfts
   fetchBulkSuggestion: FetchBulkSuggestion
@@ -22,11 +23,12 @@ export const createLoansService: CreateLoansService = ({
   apiDomain = DEFAULT_BACKEND_DOMAIN,
   programPublicKey,
   adminPublicKey,
+  onAfterSend
 }) => {
   return {
     fetchWalletNfts: createFetchWalletNfts(apiDomain),
     fetchBulkSuggestion: createFetchBulkSuggestion(apiDomain),
-    proposeLoans: createProposeLoans({ programPublicKey, adminPublicKey }),
+    proposeLoans: createProposeLoans({ programPublicKey, adminPublicKey, onAfterSend }),
     proposeLoan: createProposeLoan({ programPublicKey, adminPublicKey }),
   }
 }

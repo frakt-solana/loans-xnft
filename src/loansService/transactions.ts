@@ -220,10 +220,11 @@ const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
 type CreateProposeLoans = (props: {
   programPublicKey: string
   adminPublicKey: string
+  onAfterSend?: () => void
 }) => ProposeLoans
 export const createProposeLoans: CreateProposeLoans =
   ({ programPublicKey, adminPublicKey }) =>
-  async ({ bulkNfts, connection, wallet }) => {
+  async ({ bulkNfts, connection, wallet, onAfterSend }) => {
     const txnAndSignersArray = await createProposeLoansTxns({
       programPublicKey: new web3.PublicKey(programPublicKey),
       adminPublicKey: new web3.PublicKey(adminPublicKey),
@@ -236,6 +237,7 @@ export const createProposeLoans: CreateProposeLoans =
       txnAndSignersArray,
       connection,
       wallet,
+      onAfterSend,
     })
   }
 

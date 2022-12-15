@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { ChangeEvent, FC, useCallback, useState } from 'react'
 import {
   Button,
   Loading,
@@ -9,9 +9,15 @@ import {
 } from 'react-xnft'
 import { isNull } from 'lodash'
 
-import { useMaxBorrowValue } from './hooks'
+import {
+  borrowButtonStyles,
+  loadingStyles,
+  maxButtonStyles,
+  viewStyles,
+} from './styles'
+import { useMaxBorrowValue } from '../hooks'
 
-const Home = () => {
+const Home: FC = () => {
   const navigation = useNavigation()
   const { maxBorrowValue, isLoading } = useMaxBorrowValue()
 
@@ -22,7 +28,7 @@ const Home = () => {
     [maxBorrowValue]
   )
 
-  const onTextFieldChange = (event: any) => {
+  const onTextFieldChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value
     setBorrowValue(value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'))
   }
@@ -40,21 +46,14 @@ const Home = () => {
   if (isLoading || isNull(maxBorrowValue)) {
     return (
       <View>
-        <Loading />
+        <Loading style={loadingStyles} />
       </View>
     )
   }
+  <Loading style={loadingStyles} />
+  
   return (
-    <View
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: '60px',
-        gap: '15px',
-      }}
-    >
+    <View style={viewStyles}>
       <View>
         <Text>Borrow up tp {maxBorrowValue?.toFixed(2)}◎ with your NFTs!</Text>
       </View>
@@ -65,26 +64,13 @@ const Home = () => {
           value={borrowValue}
           onChange={onTextFieldChange}
         />
-        <Button
-          onClick={onMaxClick}
-          style={{
-            background: 'transparent',
-            position: 'absolute',
-            right: 0,
-            top: '5px',
-            bottom: '5px',
-          }}
-        >
+        <Button onClick={onMaxClick} style={maxButtonStyles}>
           MAX
         </Button>
       </View>
       <View>
         <Button
-          style={{
-            opacity: isBorrowBtnDisabled ? '0.5' : '1',
-            backgroundColor: '#9cff1f',
-            color: 'black',
-          }}
+          style={borrowButtonStyles.styles(isBorrowBtnDisabled)}
           onClick={onBorrowClick}
         >
           Borrow

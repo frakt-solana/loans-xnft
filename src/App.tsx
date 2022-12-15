@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { Stack, View, Text } from 'react-xnft'
 
-import Home from './Home'
-import Suggestions from './Suggestions'
+import Suggestions from './Suggestions/Suggestions'
 import { Frakt } from './iconsNew/Frakt'
+import Home from './Home/Home'
 
-export function App() {
+export const App: FC = () => {
   return (
     <Stack.Navigator
       initialRoute={{ name: 'home' }}
@@ -27,7 +27,6 @@ export function App() {
             throw new Error('unknown route')
         }
       }}
-      style={{}}
     >
       <Stack.Screen name={'home'} component={() => <Home />} />
       <Stack.Screen name={'suggestions'} component={Suggestions} />

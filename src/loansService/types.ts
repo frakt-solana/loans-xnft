@@ -81,6 +81,7 @@ export type ProposeLoans = (props: {
   bulkNfts: BorrowNftBulk[]
   connection: web3.Connection
   wallet: Wallet
+  onAfterSend?: () => void
 }) => ReturnType<SignAndSendAllTransactions>
 
 export interface Wallet {
