@@ -1,8 +1,11 @@
 import { useMemo } from 'react'
 import { createLoansService } from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
 
-import { LOANS_FEE_ADMIN_PUBKEY, LOANS_PROGRAM_PUBKEY } from '../constants'
-import { DEFAULT_BACKEND_DOMAIN } from './../loansService/constants'
+import {
+  DEFAULT_BACKEND_DOMAIN,
+  LOANS_FEE_ADMIN_PUBKEY,
+  LOANS_PROGRAM_PUBKEY,
+} from '../constants'
 
 export const useLoansService = () => {
   return useMemo(
