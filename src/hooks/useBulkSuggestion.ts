@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BulkSuggestion } from '../loansService'
+import { BulkSuggestion } from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
 
 import { useLoansService } from './useLoansService'
 import { useSolanaWallet } from './useWallet'

@@ -1,5 +1,5 @@
 import { filter, map, sum } from 'lodash'
-import { BorrowNftBulk } from './../loansService/types'
+import { BorrowNftBulk } from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
 
 export const getTotalValue = (bulk: BorrowNftBulk[]): number => {
   const maxLoanValue = (nft: BorrowNftBulk) => Number(nft?.maxLoanValue)

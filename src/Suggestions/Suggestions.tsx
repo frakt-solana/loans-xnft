@@ -1,5 +1,9 @@
 import React, { FC, useState } from 'react'
 import {
+  BorrowNftBulk,
+  BulkTypes,
+} from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
+import {
   Button,
   Image,
   Loading,
@@ -10,7 +14,6 @@ import {
 } from 'react-xnft'
 
 import { useBulkSuggestion, useLoansService, useSolanaWallet } from '../hooks'
-import { BorrowNftBulk, BulkTypes } from '../loansService'
 import { badgesInfo } from './constants'
 import { getTotalValue } from './helpers'
 import {
