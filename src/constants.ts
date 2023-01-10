@@ -3,4 +3,5 @@ export const LOANS_PROGRAM_PUBKEY =
 export const LOANS_FEE_ADMIN_PUBKEY =
   '9aTtUqAnuSMndCpjcPosRNf3fCkrTQAV8C8GERf3tZi3'
 
-export const DEFAULT_BACKEND_DOMAIN = 'fraktion-monorep.herokuapp.com'
+export const DEFAULT_BACKEND_DOMAIN = 'api.frakt.xyz'
+
