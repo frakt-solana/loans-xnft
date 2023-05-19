@@ -11,31 +11,28 @@ export declare type BulkSuggestion = {
   [key in BulkTypes]?: BorrowNftBulk[]
 }
 
-export const useBulkSuggestion = (solAmount = 0) => {
+export const useWalletNFTs = () => {
   const { publicKey } = useSolanaWallet()
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [suggestion, setSuggestion] = useState<BulkSuggestion | any>(null)
 
   useEffect(() => {
-    if (solAmount) {
-      ;(async () => {
-        try {
-          setIsLoading(true)
-          const suggestion = await fetchSuggestNfts({
-            walletPublicKey: publicKey,
-            totalValue: solAmount,
-          })
+    ;(async () => {
+      try {
+        setIsLoading(true)
+        const suggestion = await fetchSuggestNfts({
+          walletPublicKey: publicKey,
+        })
 
-          setSuggestion(suggestion)
-        } catch (error) {
-          console.error(error)
-        } finally {
-          setIsLoading(false)
-        }
-      })()
-    }
-  }, [solAmount])
+        setSuggestion(suggestion)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
+      }
+    })()
+  }, [])
 
   return {
     suggestion: suggestion || null,
@@ -45,15 +42,13 @@ export const useBulkSuggestion = (solAmount = 0) => {
 
 const fetchSuggestNfts = async ({
   walletPublicKey,
-  totalValue,
 }: {
   walletPublicKey: web3.PublicKey
-  totalValue: number
 }): Promise<BulkSuggestion | null> => {
   try {
     const result = await (
       await fetch(
-        `https://api.frakt.xyz/nft/suggest2/${walletPublicKey?.toBase58()}?solAmount=${totalValue}`
+        `https://api.frakt.xyz/nft/meta2/${walletPublicKey?.toBase58()}?sort=asc&skip=0&limit=100&sortBy=name`
       )
     ).json()
 

@@ -9,8 +9,11 @@ import { NavigationContainer } from '@react-navigation/native'
 import SuggestionsScreen from './screens/SuggestionsScreen'
 import HomeScreen from './screens/HomeScreen'
 import { Arrow, Frakt } from './icons'
+import { Buffer } from 'buffer';
 
 const Tab = createBottomTabNavigator()
+// @ts-ignore
+window.Buffer = Buffer
 
 function TabNavigator() {
   return (
