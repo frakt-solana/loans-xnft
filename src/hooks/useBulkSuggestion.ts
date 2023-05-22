@@ -1,30 +1,33 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import { BorrowNft, fetchWalletBorrowNfts } from '../api'
-import { useSolanaWallet } from './useWallet'
+import { BorrowNft, fetchWalletBorrowNfts } from "../api";
+import { useSolanaWallet } from "./useWallet";
+import { usePublicKeys } from "./xnft-hooks";
+import { PublicKey } from "@solana/web3.js";
+import { TESTpublicKey } from "../constants";
 
 export const useWalletNFTs = () => {
-  const { publicKey } = useSolanaWallet()
+  const { publicKey } = useSolanaWallet();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [nfts, setNfts] = useState<BorrowNft[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [nfts, setNfts] = useState<BorrowNft[]>([]);
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         const nfts = await fetchWalletBorrowNfts({
-          walletPublicKey: publicKey,
-        })
+          walletPublicKey: TESTpublicKey,
+        });
 
-        setNfts(nfts)
+        setNfts(nfts);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
-  return { nfts, isLoading }
-}
+  return { nfts, isLoading };
+};

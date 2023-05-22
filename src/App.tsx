@@ -30,25 +30,10 @@ function TabNavigator() {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={() => ({
-          headerTitle: () => <Frakt />,
-        })}
-      />
-      <Tab.Screen
         name="Suggestion"
         component={SuggestionsScreen}
-        options={({ navigation }) => ({
-          headerTitle: 'Select option',
-          headerLeft: () => (
-            <Pressable
-              style={{ paddingLeft: 15 }}
-              onPress={() => navigation.navigate('Home')}
-            >
-              <Arrow />
-            </Pressable>
-          ),
+        options={() => ({
+          headerTitle: () => <Frakt />,
         })}
       />
     </Tab.Navigator>

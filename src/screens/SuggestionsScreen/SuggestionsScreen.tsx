@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Text, View, Pressable, ActivityIndicator } from 'react-native'
+import { Text, View, Pressable, ActivityIndicator, FlatList, ScrollView } from 'react-native'
 import { isEmpty } from 'lodash'
 
 import { useSolanaConnection } from '../../hooks/xnft-hooks'
@@ -9,13 +9,14 @@ import { Screen } from '../../components/Screen'
 
 import { useBorrowSingleBond } from './hooks'
 import { styles } from './styles'
+import { NFTtoBorrow } from '../../components/NFTtoBorrow'
 
 enum LoanStatus {
   PENDING = 'pending',
   SUCCESS = 'success',
 }
 
-export const HARD_CODE_CONNECTION = window.xnft.solana.connection
+export const HARD_CODE_CONNECTION = window?.xnft?.solana?.connection
 
 interface SuggestionsScreenProps {
   navigation: any
@@ -26,6 +27,10 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
   const connection = useSolanaConnection()
 
   const { nfts } = useWalletNFTs()
+
+  const nftsWithBonds = nfts.filter(nft => nft.bondParams);
+
+  console.log({ nftsWithBonds })
 
   const [loanStatus, setLoanStatus] = useState<LoanStatus | null>(null)
 
@@ -49,7 +54,7 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
             {loanStatus === LoanStatus.SUCCESS && (
               <View style={styles.loansStatusStyles}>
                 <Text style={styles.text}>
-                  Congrats! See your NFTs in app.frakt.xyz
+                  Congrats! See your loan on frakt.xyz
                 </Text>
                 <Pressable
                   style={styles.goBackButton}
@@ -60,16 +65,22 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
               </View>
             )}
             {loanStatus === null && (
-              <div>
-                {nfts.map((nft: any) => (
-                  <div onClick={() => onSubmit(nft)}>{nft.name}</div>
-                ))}
-              </div>
+              <ScrollView>
+                <Text style={styles.heading}>Tap to borrow</Text>
+                <FlatList
+                  data={nftsWithBonds}
+                  numColumns={2}
+                  renderItem={({ item: nft }) => (
+                    <NFTtoBorrow onPress={() => onSubmit(nft)} imageUrl={nft.imageUrl} loanValue={nft.maxLoanValue} fee={nft.bondParams.fee} duration={nft.bondParams.duration}>{nft.name}</NFTtoBorrow>
+                  )}
+                  keyExtractor={(item) => item.mint}
+                />
+              </ScrollView>
             )}
           </>
         )}
       </View>
-    </Screen>
+    </Screen >
   )
 }
 
