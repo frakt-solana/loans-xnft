@@ -1,6 +1,13 @@
 import { useState } from 'react'
 
-import { Text, View, Pressable, ActivityIndicator, FlatList, ScrollView } from 'react-native'
+import {
+  Text,
+  View,
+  Pressable,
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+} from 'react-native'
 import { isEmpty } from 'lodash'
 
 import { useSolanaConnection } from '../../hooks/xnft-hooks'
@@ -28,7 +35,7 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
 
   const { nfts } = useWalletNFTs()
 
-  const nftsWithBonds = nfts.filter(nft => nft.bondParams);
+  const nftsWithBonds = nfts.filter((nft) => nft?.bondParams)
 
   console.log({ nftsWithBonds })
 
@@ -65,13 +72,21 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
               </View>
             )}
             {loanStatus === null && (
-              <ScrollView>
+              <ScrollView style={{ height: '100vh' }}>
                 <Text style={styles.heading}>Tap to borrow</Text>
                 <FlatList
                   data={nftsWithBonds}
                   numColumns={2}
                   renderItem={({ item: nft }) => (
-                    <NFTtoBorrow onPress={() => onSubmit(nft)} imageUrl={nft.imageUrl} loanValue={nft.maxLoanValue} fee={nft.bondParams.fee} duration={nft.bondParams.duration}>{nft.name}</NFTtoBorrow>
+                    <NFTtoBorrow
+                      onPress={() => onSubmit(nft)}
+                      imageUrl={nft.imageUrl}
+                      loanValue={nft.maxLoanValue}
+                      fee={nft.bondParams.fee}
+                      duration={nft.bondParams.duration}
+                    >
+                      {nft.name}
+                    </NFTtoBorrow>
                   )}
                   keyExtractor={(item) => item.mint}
                 />
@@ -80,7 +95,7 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
           </>
         )}
       </View>
-    </Screen >
+    </Screen>
   )
 }
 
