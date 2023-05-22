@@ -1,31 +1,23 @@
 import { useEffect, useState } from 'react'
-import {
-  BorrowNftBulk,
-  BulkTypes,
-} from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
-import { web3 } from '@frakt-protocol/frakt-sdk'
 
+import { BorrowNft, fetchWalletBorrowNfts } from '../api'
 import { useSolanaWallet } from './useWallet'
-
-export declare type BulkSuggestion = {
-  [key in BulkTypes]?: BorrowNftBulk[]
-}
 
 export const useWalletNFTs = () => {
   const { publicKey } = useSolanaWallet()
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [suggestion, setSuggestion] = useState<BulkSuggestion | any>(null)
+  const [nfts, setNfts] = useState<BorrowNft[]>([])
 
   useEffect(() => {
     ;(async () => {
       try {
         setIsLoading(true)
-        const suggestion = await fetchSuggestNfts({
+        const nfts = await fetchWalletBorrowNfts({
           walletPublicKey: publicKey,
         })
 
-        setSuggestion(suggestion)
+        setNfts(nfts)
       } catch (error) {
         console.error(error)
       } finally {
@@ -34,27 +26,5 @@ export const useWalletNFTs = () => {
     })()
   }, [])
 
-  return {
-    suggestion: suggestion || null,
-    isLoading,
-  }
-}
-
-const fetchSuggestNfts = async ({
-  walletPublicKey,
-}: {
-  walletPublicKey: web3.PublicKey
-}): Promise<BulkSuggestion | null> => {
-  try {
-    const result = await (
-      await fetch(
-        `https://api.frakt.xyz/nft/meta2/${walletPublicKey?.toBase58()}?sort=asc&skip=0&limit=100&sortBy=name`
-      )
-    ).json()
-
-    return result
-  } catch (error) {
-    console.error(error)
-    return null
-  }
+  return { nfts, isLoading }
 }

@@ -1,6 +1,3 @@
-import { filter, map, sum } from 'lodash'
-import { BorrowNftBulk } from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
-
 import { BondOfferV2 } from 'fbonds-core/lib/fbond-protocol/types'
 import { web3 } from '@frakt-protocol/frakt-sdk'
 import {
@@ -8,34 +5,10 @@ import {
   getBestOrdersByBorrowValue,
 } from 'fbonds-core/lib/fbond-protocol/utils/cartManagerV2'
 import { Market, Pair, BondOrderParams, BondCartOrder, Order } from './types'
-import { BASE_POINTS, BONDS_PROTOCOL_FEE_IN_BASE_POINTS } from '../../utils/bonds'
-
-export const getTotalValue = (bulk: BorrowNftBulk[]): number => {
-  const maxLoanValue = (nft: BorrowNftBulk) => Number(nft?.maxLoanValue)
-  const suggestedLoanValue = (nft: BorrowNftBulk) =>
-    nft?.priceBased?.suggestedLoanValue
-
-  const priceBasedLoans = filter(bulk, { isPriceBased: true })
-  const timeBasedLoans = filter(bulk, { isPriceBased: false })
-
-  const priceBasedLoansValue =
-    sum(map(priceBasedLoans, suggestedLoanValue)) || 0
-
-  const timeBasedLoansValue = sum(map(timeBasedLoans, maxLoanValue)) || 0
-
-  return priceBasedLoansValue + timeBasedLoansValue
-}
-
-export const mapSuggestionsBulkNfts = (borrowBulkNfts: BorrowNftBulk[]) => {
-  return borrowBulkNfts.map((nft) => {
-    return {
-      ...nft,
-      solLoanValue: nft.solLoanValue,
-      isPriceBased: nft.isPriceBased,
-      priceBased: nft?.priceBased,
-    }
-  })
-}
+import {
+  BASE_POINTS,
+  BONDS_PROTOCOL_FEE_IN_BASE_POINTS,
+} from '../../utils/bonds'
 
 const getBondOrderParams = ({
   market,
@@ -113,6 +86,5 @@ type PairLoanDurationFilter = (props: {
 }) => boolean
 export const pairLoanDurationFilter: PairLoanDurationFilter = ({
   pair,
-  duration = 7, //? Days
-  // }) => duration * (24 * 60 * 60) <= pair?.validation?.durationFilter; //TODO: Allow to take loans with shorter duration
+  duration = 7,
 }) => duration * (24 * 60 * 60) <= pair?.validation?.durationFilter

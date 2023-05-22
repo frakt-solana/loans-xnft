@@ -2,18 +2,18 @@ import { HARD_CODE_CONNECTION } from './SuggestionsScreen'
 import { filterPairs, getBondOrderParams } from './heplers'
 import { useSolanaWallet } from '../../hooks'
 import { web3 } from '@frakt-protocol/frakt-sdk'
-import { BondCartOrder, Market, Pair } from './types'
-import axios from 'axios'
+import { BondCartOrder } from './types'
 import {
   MAX_ACCOUNTS_IN_FAST_TRACK,
   makeCreateBondMultiOrdersTransaction,
 } from '../../utils/bonds'
 import { signAndSendV0TransactionWithLookupTables } from '../../utils/transactions'
+import { BorrowNft, fetchCertainMarket, fetchMarketPairs } from '../../api'
 
 export const useBorrowSingleBond = () => {
   const wallet = useSolanaWallet()
 
-  const onSubmit = async (nft: any) => {
+  const onSubmit = async (nft: BorrowNft) => {
     try {
       const { market, pairs } = await fetchMarketAndPairs(
         nft?.bondParams?.marketPubkey,
@@ -69,22 +69,11 @@ const borrowSingle = async ({
   connection,
   wallet,
 }: {
-  nft: any
+  nft: BorrowNft
   bondOrderParams: BondCartOrder[]
   connection: web3.Connection
   wallet: any
 }) => {
-  console.log(nft, 'nft')
-  console.log({
-    nftMint: nft?.mint,
-    marketPubkey: nft?.bondParams?.marketPubkey,
-    fraktMarketPubkey: nft?.fraktMarket,
-    oracleFloorPubkey: nft?.oracleFloor,
-    whitelistEntryPubkey: nft?.bondParams?.whitelistEntry?.publicKey,
-    bondOrderParams: bondOrderParams,
-    connection,
-    wallet,
-  })
   const {
     createLookupTableTxn,
     extendLookupTableTxns,
@@ -118,28 +107,4 @@ const borrowSingle = async ({
     wallet,
     commitment: 'confirmed',
   })
-}
-
-type FetchMarketPairs = (props: {
-  marketPubkey: web3.PublicKey
-}) => Promise<Pair[]>
-export const fetchMarketPairs: FetchMarketPairs = async ({ marketPubkey }) => {
-  const { data } = await axios.get<Pair[]>(
-    `https://api.frakt.xyz/bond-offers/${marketPubkey?.toBase58()}`
-  )
-
-  return data
-}
-
-type FetchCertainMarket = (props: {
-  marketPubkey: web3.PublicKey
-}) => Promise<Market>
-export const fetchCertainMarket: FetchCertainMarket = async ({
-  marketPubkey,
-}) => {
-  const { data } = await axios.get<Market>(
-    `https://api.frakt.xyz/markets/${marketPubkey?.toBase58()}`
-  )
-
-  return data
 }

@@ -1,24 +1,14 @@
 import { useState } from 'react'
-import {
-  BorrowNftBulk,
-  BulkTypes,
-} from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
+
 import { Text, View, Pressable, ActivityIndicator } from 'react-native'
 import { isEmpty } from 'lodash'
 
-import { getTotalValue } from './heplers'
 import { useSolanaConnection } from '../../hooks/xnft-hooks'
+import { useSolanaWallet, useWalletNFTs } from '../../hooks'
 import { Screen } from '../../components/Screen'
-import { badgesInfo } from './constants'
-import {
-  useBulkSuggestion,
-  useLoansService,
-  useSolanaWallet,
-  useWalletNFTs,
-} from '../../hooks'
 
-import { styles } from './styles'
 import { useBorrowSingleBond } from './hooks'
+import { styles } from './styles'
 
 enum LoanStatus {
   PENDING = 'pending',
@@ -35,17 +25,16 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
   const wallet = useSolanaWallet()
   const connection = useSolanaConnection()
 
-  const { suggestion } = useWalletNFTs()
+  const { nfts } = useWalletNFTs()
 
   const [loanStatus, setLoanStatus] = useState<LoanStatus | null>(null)
 
   const { onSubmit } = useBorrowSingleBond()
-  console.log(suggestion)
 
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
-        {isEmpty(suggestion) ? (
+        {isEmpty(nfts) ? (
           <ActivityIndicator size="large" />
         ) : (
           <>
@@ -72,7 +61,7 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
             )}
             {loanStatus === null && (
               <div>
-                {suggestion.map((nft: any) => (
+                {nfts.map((nft: any) => (
                   <div onClick={() => onSubmit(nft)}>{nft.name}</div>
                 ))}
               </div>
