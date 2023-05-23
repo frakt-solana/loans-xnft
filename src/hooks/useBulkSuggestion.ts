@@ -1,39 +1,32 @@
-import { useEffect, useState } from 'react'
-import { BulkSuggestion } from '@frakt-protocol/frakt-sdk/lib/loans/loansService'
+import { useEffect, useState } from "react";
 
-import { useLoansService } from './useLoansService'
-import { useSolanaWallet } from './useWallet'
+import { BorrowNft, fetchWalletBorrowNfts } from "../api";
+import { useSolanaWallet } from "./useWallet";
+import { PublicKey } from "@solana/web3.js";
+import { TESTpublicKey } from "../constants";
 
-export const useBulkSuggestion = (solAmount = 0) => {
-  const { publicKey } = useSolanaWallet()
+export const useWalletNFTs = () => {
+  const { publicKey } = useSolanaWallet();
 
-  const { fetchBulkSuggestion } = useLoansService()
-
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [suggestion, setSuggestion] = useState<BulkSuggestion | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [nfts, setNfts] = useState<BorrowNft[]>([]);
 
   useEffect(() => {
-    if (solAmount) {
-      ;(async () => {
-        try {
-          setIsLoading(true)
-          const suggestion = await fetchBulkSuggestion({
-            walletPublicKey: publicKey,
-            totalValue: solAmount,
-          })
+    (async () => {
+      try {
+        setIsLoading(true);
+        const nfts = await fetchWalletBorrowNfts({
+          walletPublicKey: publicKey,
+        });
 
-          setSuggestion(suggestion)
-        } catch (error) {
-          console.error(error)
-        } finally {
-          setIsLoading(false)
-        }
-      })()
-    }
-  }, [solAmount])
+        setNfts(nfts);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
-  return {
-    suggestion: suggestion || null,
-    isLoading,
-  }
-}
+  return { nfts, isLoading };
+};

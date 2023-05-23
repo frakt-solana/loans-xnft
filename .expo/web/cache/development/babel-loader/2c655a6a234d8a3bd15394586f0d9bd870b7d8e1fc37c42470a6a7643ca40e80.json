@@ -1,0 +1,1 @@
+{"ast":null,"code":"export { default } from \"./SuggestionsScreen\";","map":{"version":3,"names":["default"],"sources":["/Users/ezekiel/Desktop/frakt/loans-xnft/src/screens/SuggestionsScreen/index.ts"],"sourcesContent":["export { default } from './SuggestionsScreen'\n"],"mappings":"AAAA,SAASA,OAAO"},"metadata":{},"sourceType":"module","externalDependencies":[]}

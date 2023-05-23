@@ -1,35 +1,70 @@
-import React, { FC } from 'react'
-import { Stack, View, Text } from 'react-xnft'
+import { ActivityIndicator, Pressable, View } from 'react-native'
+import { registerRootComponent } from 'expo'
+import { RecoilRoot } from 'recoil'
 
-import Suggestions from './Suggestions/Suggestions'
-import { Frakt } from './iconsNew/Frakt'
-import Home from './Home/Home'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { useFonts, Inter_900Black } from '@expo-google-fonts/dev'
+import { NavigationContainer } from '@react-navigation/native'
 
-export const App: FC = () => {
+import SuggestionsScreen from './screens/SuggestionsScreen'
+import { Frakt } from './icons'
+import { Buffer } from 'buffer'
+
+const Tab = createBottomTabNavigator()
+// @ts-ignore
+window.Buffer = Buffer
+
+function TabNavigator() {
   return (
-    <Stack.Navigator
-      initialRoute={{ name: 'home' }}
-      // @ts-ignore
-      options={({ route }) => {
-        switch (route.name) {
-          case 'home':
-            return {
-              title: (
-                <View style={{ display: 'flex', justifyContent: 'center' }}>
-                  <Frakt />
-                </View>
-              ),
-            }
-          case 'suggestions':
-            return { title: <Text>Select option</Text> }
-
-          default:
-            throw new Error('unknown route')
-        }
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#19191c',
+          borderBottomColor: '#19191c',
+        },
+        headerTitleAlign: 'center',
+        headerTintColor: '#fff',
+        tabBarStyle: { display: 'none' },
       }}
     >
-      <Stack.Screen name={'home'} component={() => <Home />} />
-      <Stack.Screen name={'suggestions'} component={Suggestions} />
-    </Stack.Navigator>
+      <Tab.Screen
+        name="Suggestion"
+        component={SuggestionsScreen}
+        options={() => ({
+          headerTitle: () => <Frakt />,
+        })}
+      />
+    </Tab.Navigator>
   )
 }
+
+function App() {
+  let [fontsLoaded] = useFonts({
+    Inter_900Black,
+  })
+
+  if (!fontsLoaded) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <ActivityIndicator />
+      </View>
+    )
+  }
+
+  return (
+    <RecoilRoot>
+      <NavigationContainer>
+        <TabNavigator />
+      </NavigationContainer>
+    </RecoilRoot>
+  )
+}
+
+export default registerRootComponent(App)
