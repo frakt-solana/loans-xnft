@@ -7,9 +7,8 @@ import { useFonts, Inter_900Black } from '@expo-google-fonts/dev'
 import { NavigationContainer } from '@react-navigation/native'
 
 import SuggestionsScreen from './screens/SuggestionsScreen'
-import HomeScreen from './screens/HomeScreen'
-import { Arrow, Frakt } from './icons'
-import { Buffer } from 'buffer';
+import { Frakt } from './icons'
+import { Buffer } from 'buffer'
 
 const Tab = createBottomTabNavigator()
 // @ts-ignore

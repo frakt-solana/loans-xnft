@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import {
   Text,
   View,
@@ -10,18 +8,12 @@ import {
 } from 'react-native'
 import { isEmpty } from 'lodash'
 
-import { useSolanaConnection } from '../../hooks/xnft-hooks'
-import { useSolanaWallet, useWalletNFTs } from '../../hooks'
-import { Screen } from '../../components/Screen'
-
-import { useBorrowSingleBond } from './hooks'
-import { styles } from './styles'
 import { NFTtoBorrow } from '../../components/NFTtoBorrow'
+import { LoanStatus, useBorrowSingleBond } from './hooks'
+import { Screen } from '../../components/Screen'
+import { useWalletNFTs } from '../../hooks'
 
-enum LoanStatus {
-  PENDING = 'pending',
-  SUCCESS = 'success',
-}
+import { styles } from './styles'
 
 export const HARD_CODE_CONNECTION = window?.xnft?.solana?.connection
 
@@ -30,18 +22,11 @@ interface SuggestionsScreenProps {
 }
 
 function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
-  const wallet = useSolanaWallet()
-  const connection = useSolanaConnection()
-
   const { nfts } = useWalletNFTs()
 
   const nftsWithBonds = nfts.filter((nft) => nft?.bondParams)
 
-  console.log({ nftsWithBonds })
-
-  const [loanStatus, setLoanStatus] = useState<LoanStatus | null>(null)
-
-  const { onSubmit } = useBorrowSingleBond()
+  const { onSubmit, loanStatus } = useBorrowSingleBond()
 
   return (
     <Screen style={styles.screen}>
@@ -72,7 +57,7 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
               </View>
             )}
             {loanStatus === null && (
-              <ScrollView style={{ height: '100vh' }}>
+              <ScrollView style={{ height: 'calc(100vh - 80px)' }}>
                 <Text style={styles.heading}>Tap to borrow</Text>
                 <FlatList
                   data={nftsWithBonds}
@@ -84,9 +69,7 @@ function SuggestionsScreen({ navigation }: SuggestionsScreenProps) {
                       loanValue={nft.maxLoanValue}
                       fee={nft.bondParams.fee}
                       duration={nft.bondParams.duration}
-                    >
-                      {nft.name}
-                    </NFTtoBorrow>
+                    />
                   )}
                   keyExtractor={(item) => item.mint}
                 />
